@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bio</title>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: white;
+            overflow: hidden;
+            height: 100vh;
+            font-weight: 300;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Loading screen - Cracking Cube */
+        .cracking-cube {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            animation: cubeFloat 3s ease-in-out infinite, cubePulse 2s ease-in-out infinite;
+        }
+
+        .cube-main {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #ff6b9d, #ff8fab, #ffb3c7);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(255, 107, 157, 0.4);
+            animation: crackAnimation 4s ease-in-out infinite;
+            overflow: hidden;
+        }
+
+        .cube-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.2), transparent 50%);
+            border-radius: 50%;
+        }
+
+        .crack-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .crack {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            animation: crackGrow 4s ease-in-out infinite;
+        }
+
+        .crack:nth-child(1) {
+            top: 20%;
+            left: 30%;
+            width: 2px;
+            height: 40px;
+            transform: rotate(45deg);
+            animation-delay: 0s;
+        }
+
+        .crack:nth-child(2) {
+            top: 50%;
+            right: 25%;
+            width: 2px;
+            height: 35px;
+            transform: rotate(-30deg);
+            animation-delay: 0.5s;
+        }
+
+        .crack:nth-child(3) {
+            bottom: 30%;
+            left: 40%;
+            width: 2px;
+            height: 25px;
+            transform: rotate(60deg);
+            animation-delay: 1s;
+        }
+
+        .crack:nth-child(4) {
+            top: 60%;
+            left: 20%;
+            width: 2px;
+            height: 30px;
+            transform: rotate(-45deg);
+            animation-delay: 1.5s;
+        }
+
+        .loading-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #ffffff, rgba(255, 255, 255, 0.6));
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) {
+            top: 15%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            top: 25%;
+            right: 20%;
+            animation-delay: 0.7s;
+        }
+
+        .particle:nth-child(3) {
+            bottom: 25%;
+            left: 25%;
+            animation-delay: 1.4s;
+        }
+
+        .particle:nth-child(4) {
+            bottom: 15%;
+            right: 15%;
+            animation-delay: 2.1s;
+        }
+
+        @keyframes cubeFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        @keyframes cubePulse {
+            0% {
+                box-shadow: 0 20px 40px rgba(255, 107, 157, 0.4);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 25px 50px rgba(255, 107, 157, 0.6);
+                transform: scale(1.03);
+            }
+            100% {
+                box-shadow: 0 20px 40px rgba(255, 107, 157, 0.4);
+                transform: scale(1);
+            }
+        }
+
+        @keyframes crackGrow {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            30% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            70% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0px) scale(0.5);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-15px) scale(1.2);
+                opacity: 0.9;
+            }
+        }
+
+        /* Hello screen */
+        .hello-text {
+            font-size: 8rem;
+            font-weight: 200;
+            letter-spacing: -0.04em;
+            color: black;
+            animation: helloAnim 1.5s ease-out;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        @keyframes helloAnim {
+            0% { opacity: 0; transform: scale(0.5) translateY(50px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Bio section */
+        .bio-container {
+            max-width: 56rem;
+            margin: 0 auto;
+            padding: 0 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .bio-blob {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f1f3f4 100%);
+            border-radius: 60% 40% 65% 35% / 55% 45% 55% 45%;
+            box-shadow: 0 20px 40px -8px rgba(0,0,0,0.12);
+            animation: blobAnim 12s ease-in-out infinite;
+            z-index: -1;
+            transform-origin: center;
+        }
+
+        @keyframes blobAnim {
+            0%, 100% {
+                border-radius: 60% 40% 65% 35% / 55% 45% 55% 45%;
+                transform: scale(1) translateY(0px);
+            }
+            20% {
+                border-radius: 45% 55% 70% 30% / 60% 40% 60% 40%;
+                transform: scale(1.05) translateY(-5px);
+            }
+            40% {
+                border-radius: 55% 45% 60% 40% / 50% 50% 50% 50%;
+                transform: scale(1.02) translateY(-2px);
+            }
+            60% {
+                border-radius: 70% 30% 55% 45% / 45% 55% 45% 55%;
+                transform: scale(1.03) translateY(-3px);
+            }
+            80% {
+                border-radius: 65% 35% 50% 50% / 55% 45% 55% 45%;
+                transform: scale(1.01) translateY(-1px);
+            }
+        }
+
+        .bio-name {
+            font-size: 6rem;
+            font-weight: 200;
+            letter-spacing: -0.04em;
+            color: black;
+            margin-bottom: 40px;
+            animation: nameAnim 1.2s ease-out 0.5s both;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+
+        @keyframes nameAnim {
+            0% { opacity: 0; transform: translateY(-40px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .bio-text {
+            font-size: 1.5rem;
+            line-height: 1.625;
+            color: #374151;
+            font-weight: 300;
+            max-width: 32rem;
+            margin: 0 auto;
+            animation: textAnim 1.2s ease-out 1s both;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        @keyframes textAnim {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cracking-cube {
+                width: 160px;
+                height: 160px;
+            }
+
+            .cube-main {
+                width: 160px;
+                height: 160px;
+            }
+
+            .particle {
+                width: 4px;
+                height: 4px;
+            }
+            .hello-text {
+                font-size: 3.5rem;
+                font-weight: 200;
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            }
+            .bio-name {
+                font-size: 2.5rem;
+                margin-bottom: 24px;
+            }
+            .bio-text {
+                font-size: 1rem;
+                line-height: 1.5;
+                padding: 0 16px;
+            }
+            .bio-container {
+                padding: 0 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cracking-cube {
+                width: 140px;
+                height: 140px;
+            }
+
+            .cube-main {
+                width: 140px;
+                height: 140px;
+            }
+
+            .particle {
+                width: 3px;
+                height: 3px;
+            }
+            .hello-text {
+                font-size: 2.5rem;
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            }
+            .bio-name {
+                font-size: 2rem;
+            }
+            .bio-text {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading screen -->
+        <div class="cracking-cube" id="loading">
+            <div class="cube-main">
+                <div class="crack-lines">
+                    <div class="crack"></div>
+                    <div class="crack"></div>
+                    <div class="crack"></div>
+                    <div class="crack"></div>
+                </div>
+            </div>
+            <div class="loading-particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+        </div>
+
+        <!-- Hello screen -->
+        <h1 class="hello-text" id="hello" style="display: none;">hello</h1>
+
+        <!-- Bio section -->
+        <div class="bio-container" id="bio" style="display: none;">
+            <div class="bio-blob"></div>
+            <div style="padding: 96px 48px; position: relative;">
+                <h2 class="bio-name">snostrue</h2>
+                <p class="bio-text">
+                    Люблю кодить на Python, JavaScript, Java и C++.<br>
+                    Зависаю в тг и на anixart. Общительный и позитивный человек.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Пропускаем загрузку, начинаем сразу с hello
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('hello').style.display = 'block';
+
+        setTimeout(() => {
+            document.getElementById('hello').style.display = 'none';
+            document.getElementById('bio').style.display = 'block';
+        }, 2000);
+    </script>
+</body>
+</html>
